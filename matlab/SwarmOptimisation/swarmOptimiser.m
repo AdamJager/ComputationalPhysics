@@ -1,0 +1,38 @@
+function [bestPosition, bestFitness, fitness, counter, careTaker] = swarmOptimiser(iterations, ...
+                                                     numberOfAgents, ...
+                                                     cognitiveFactor, socialFactor, ...
+                                                     maskHeight, maskWidth, weight, ...
+                                                     transmissionMatrix, ...
+                                                     velocityBounds, positionBounds)
+ 
+    patterns = normrnd(0, 0.5, maskHeight, maskWidth, numberOfAgents);
+    careTaker = CareTaker(numberOfAgents, patterns, cognitiveFactor, socialFactor, transmissionMatrix, ...
+                          velocityBounds, positionBounds);
+    counter = 0;
+    if iterations == -1
+        notConverged = true;
+        fitness = [];
+        while notConverged
+           careTaker.updateAgents(weight);
+           careTaker.checkSwarmBest();
+           
+           if  range([careTaker.agents(:).personalBestPositionCost]) < 1e-6
+               break;
+           end
+           if counter > 10000
+               break
+           end
+           counter = counter + 1;
+           fitness(end + 1) = careTaker.swarmBestPositionCost;
+        end
+    else
+        fitness = zeros(iterations, 1);
+        for iteration = 1:iterations
+            careTaker.updateAgents(weight);
+            careTaker.checkSwarmBest();
+            fitness(iteration) = careTaker.swarmBestPositionCost;
+        end
+    end
+    bestPosition = careTaker.swarmBestPosition;
+    bestFitness = careTaker.swarmBestPositionCost;
+end
