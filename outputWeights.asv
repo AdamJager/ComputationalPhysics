@@ -1,0 +1,7 @@
+function [outputWeights] = outputWeights(xTrain, yTrain, inputLayerSize, hiddenLayerSize, alpha)
+    initialWeights = normrnd(0, 0.5, inputLayerSize, hiddenLayerSize);
+    biases = normrnd(0, 0.5, hiddenLayerSize, 1)';
+    size(pinv(hiddenNodes(xTrain, initialWeights, biases, alpha)))
+    size(yTrain)
+    outputWeights = pinv(hiddenNodes(xTrain, initialWeights, biases, alpha)( * yTrain);
+end
